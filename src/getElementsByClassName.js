@@ -5,8 +5,6 @@
 
 // But instead we're going to implement it from scratch:
 var getElementsByClassName = function(className){
-  var result = [];
-  var docLength = document.length;  //  var docLength = className.length;
   var childSearchArray = [];
   var nodeResults = [];
   
@@ -16,14 +14,21 @@ var getElementsByClassName = function(className){
   }
   
   var childSearch = function(node, target) {
-    var tempArray = []; // ???????
+    var tempArray = [];
     
-    for (var i = 0; i < node.length && node.length; i++) {  // node[i].childElementCount; // BASE CASE
-      if (node[i].className === target) { // node; node[i]; 
-        nodeResults.push(node[i]);
-        tempArray.push(node[i].outerHTML);
-        //debugger;
-      } // end BASE CASE -- if (push matching class innerHTML onto array)
+    var nodeHasClassName = function(inString) {
+      if ( inString.search(target) >= 0 ) {
+        return true;
+      } else {
+        return false;
+      }
+    }; // end nodeHasClassName
+    
+    for (var i = 0; i < node.length && node.length; i++) { // BASE CASE
+        if ( nodeHasClassName(node[i].className) ) {
+          nodeResults.push(node[i]);
+          tempArray.push(node[i].outerHTML);
+        } // end BASE CASE (if (push matching class innerHTML onto array))
     
     tempArray.push( childSearch(node[i].children, target) ); // recursive call to get next element
     } // end for (iterate through childElements)
@@ -32,10 +37,7 @@ var getElementsByClassName = function(className){
   }; // end childSearch
   
   childSearchArray = childSearch(document.children, className); // return is obsolete -- ignore
+  var result = Array.prototype.slice.apply(nodeResults);
   
-//   result = Array.prototype.slice.apply(nodeResults);
-//   debugger;
-  
-  return nodeResults;
-  
+  return nodeResults;  
 }; // end getElementsByClassName
